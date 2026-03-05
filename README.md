@@ -1,3 +1,11 @@
+# Personal Study
+This repo contains my study and projects, using foundry, along side some class tasks too.
+
+
+
+
+
+
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
