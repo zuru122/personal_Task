@@ -10,24 +10,21 @@ contract NumberFactory {
         assembly {
             // Store _no in scratch memory at position 0x00, then hash it
             mstore(0x00, _no)
-            salt := keccak256(0x00, 0x20)  // hash 32 bytes starting at 0x00
+            salt := keccak256(0x00, 0x20) // hash 32 bytes starting at 0x00
         }
 
         // --- Step 2: Get the creation bytecode of NumberChildren ---
         // We must ABI-encode the constructor arg (_no) and append it to the bytecode
-        bytes memory bytecode = abi.encodePacked(
-            type(NumberChildren).creationCode,
-            abi.encode(_no)
-        );
+        bytes memory bytecode = abi.encodePacked(type(NumberChildren).creationCode, abi.encode(_no));
 
         // --- Step 3: Deploy using CREATE2 in assembly ---
         address deployed;
         assembly {
             deployed := create2(
-                0,                   // 0 ETH sent to child on deploy
+                0, // 0 ETH sent to child on deploy
                 add(bytecode, 0x20), // pointer to actual bytecode (skip 32-byte length prefix)
-                mload(bytecode),     // length of bytecode
-                salt                 // our computed salt
+                mload(bytecode), // length of bytecode
+                salt // our computed salt
             )
 
             // If deployed address is zero, deployment failed → revert
@@ -51,9 +48,9 @@ contract NumberChildren {
         // Assembly version of: keccak256(abi.encodePacked(ownerNumber))
         assembly {
             // ownerNumber is at storage slot 0
-            let val := sload(0)      // read ownerNumber from storage slot 0
+            let val := sload(0) // read ownerNumber from storage slot 0
 
-            mstore(0x00, val)        // store the value in memory at 0x00
+            mstore(0x00, val) // store the value in memory at 0x00
             r := keccak256(0x00, 0x20) // hash 32 bytes → same result as Solidity version
         }
     }
